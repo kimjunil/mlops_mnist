@@ -1,0 +1,27 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ main ]
+    tags: 
+      - 'v*'
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set env
+      run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/v}" >> $GITHUB_ENV
+    - name: Docker Build & Push Action
+      uses: mr-smithers-excellent/docker-build-push@v5.6
+      with:
+        image: mnist_classifier
+        tags: ${{ env.RELEASE_VERSION }}
+        registry: ghcr.io
+        dockerfile: Dockerfile
+        directory: .
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.PACKAGE_REGISTRY_ACCESS_TOKEN}}
+        addLatest: true
