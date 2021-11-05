@@ -35,6 +35,8 @@ def main():
     args = get_args()
     epochs = args.epochs
 
+    save_model_path = "mnist_model.h5"
+
     model = MnistClissifier()
     (train_x, train_y), (test_x, test_y) = tf.keras.datasets.mnist.load_data()
     
@@ -45,6 +47,8 @@ def main():
     history = model.fit(train_x, train_y, epochs=epochs)
     loss, acc = model.evaluate(test_x, test_y)
     print("model acc: {:.4f}, model loss: {:.4f}".format(acc, loss))
+
+    model.save(save_model_path)
 
 if __name__ == '__main__':
   main()
