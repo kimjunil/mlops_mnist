@@ -29,8 +29,8 @@ jobs:
       run: git clone https://${{ github.repository_owner }}:${{ secrets.PACKAGE_REGISTRY_ACCESS_TOKEN}}@github.com/kimjunil/mlops_mnist_config.git && cd mlops_mnist_config
     - name: Setup Kustomize
       uses: imranismail/setup-kustomize@v1
-    - name: cd mlops_mnist_config
-      run: kustomize edit set image kimjunil/mnist_classifier:${{ env.RELEASE_VERSION }}
+    - name: Update Training job version
+      run: cd ./overlays/dev && kustomize edit set image kimjunil/mnist_classifier:${{ env.RELEASE_VERSION }}
     - name: Clone config
       run: git commit -am 'Publish new version ${imageTag} to dev' && git push || echo 'no changes'
     
