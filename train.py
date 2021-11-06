@@ -1,6 +1,8 @@
 from typing import get_args
 import tensorflow as tf
 import argparse
+import os
+import datetime
 
 class MnistClissifier(tf.keras.Model):
 
@@ -35,7 +37,11 @@ def main():
     args = get_args()
     epochs = args.epochs
 
-    save_model_path = "mnist_model.h5"
+
+    gcp_bucket = "keras-mnist_model_store"
+
+    timestamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+    save_path = os.path.join("gs://", gcp_bucket, "mnist_model", f"save_at_{timestamp}")
 
     model = MnistClissifier()
     (train_x, train_y), (test_x, test_y) = tf.keras.datasets.mnist.load_data()
@@ -48,7 +54,7 @@ def main():
     loss, acc = model.evaluate(test_x, test_y)
     print("model acc: {:.4f}, model loss: {:.4f}".format(acc, loss))
 
-    model.save(save_model_path)
+    model.save(save_path)
 
 if __name__ == '__main__':
   main()
