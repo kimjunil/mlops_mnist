@@ -2,7 +2,6 @@ name: Docker Image CI
 
 on:
   push:
-    branches: [ main ]
     tags: 
       - 'v*'
 
@@ -28,9 +27,14 @@ jobs:
     - name: Setup Kustomize
       uses: imranismail/setup-kustomize@v1
     - name: Clone config
+      uses: actions/checkout@v2
+      with:
+        token: ${{ secrets.PACKAGE_REGISTRY_ACCESS_TOKEN}}
+        repository: kimjunil/mlops_mnist_config
+        path: mlops_mnist_config
+    - name: Clone config
       run: |
-        git clone https://github.com/kimjunil/mlops_mnist_config.git \
-        cd mnist_project_config/overlays/dev \
+        cd mlops_mnist_config/overlays/dev \
         kustomize edit set image kimjunil/mnist_classifier:${{ env.RELEASE_VERSION }} \
         git commit -am 'Publish new version ${imageTag} to dev' \
         git push || echo 'no changes'
