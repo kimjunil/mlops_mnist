@@ -30,7 +30,7 @@ jobs:
     - name: Setup Kustomize
       uses: imranismail/setup-kustomize@v1
     - name: Update Training job version
-      run: cd ./overlays/dev && kustomize edit set image kimjunil/mnist_classifier:${{ env.RELEASE_VERSION }}
+      run: cd overlays/dev && kustomize edit set image kimjunil/mnist_classifier:${{ env.RELEASE_VERSION }}
     - name: Clone config
       run: git commit -am 'Publish new version ${imageTag} to dev' && git push || echo 'no changes'
     
