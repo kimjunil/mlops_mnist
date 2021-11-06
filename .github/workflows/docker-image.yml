@@ -26,7 +26,7 @@ jobs:
         addLatest: true
     - name: Setup Kustomize
       uses: imranismail/setup-kustomize@v1
-    - name: Clone config
+    - name: Checkout mlops_mnist_config
       uses: actions/checkout@v2
       with:
         token: ${{ secrets.PACKAGE_REGISTRY_ACCESS_TOKEN}}
@@ -34,8 +34,8 @@ jobs:
         path: mlops_mnist_config
     - name: Clone config
       run: |
-        cd mlops_mnist_config/overlays/dev \
-        kustomize edit set image kimjunil/mnist_classifier:${{ env.RELEASE_VERSION }} \
-        git commit -am 'Publish new version ${imageTag} to dev' \
+        cd mlops_mnist_config/overlays/dev
+        kustomize edit set image kimjunil/mnist_classifier:${{ env.RELEASE_VERSION }}
+        git commit -am 'Publish new version ${imageTag} to dev'
         git push || echo 'no changes'
       
