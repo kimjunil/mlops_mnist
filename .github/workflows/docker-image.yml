@@ -38,6 +38,6 @@ jobs:
         kustomize edit set image kimjunil/mnist_classifier:${{ env.RELEASE_VERSION }}
         git config --global user.name ${{ github.repository_owner }}
         git config --global user.email "iam@junil.kim"
-        git commit -am 'Publish new version ${imageTag} to dev'
+        git commit -am 'Publish new version ${{ env.RELEASE_VERSION }} to dev'
         git push || echo 'no changes'
       
