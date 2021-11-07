@@ -42,7 +42,7 @@ jobs:
     - name: Clone config
       run: |
         cd mlops_mnist_config/overlays/dev
-        kustomize edit set image mnist_classifier:${{ env.RELEASE_VERSION }}
+        kustomize edit set image ghcr.io/kimjunil/mnist_classifier:${{ env.RELEASE_VERSION }}
         git config --global user.name ${{ github.repository_owner }}
         git config --global user.email "iam@junil.kim"
         git commit -am 'Publish new version ${{ env.RELEASE_VERSION }} to dev'
