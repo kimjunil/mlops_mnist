@@ -38,10 +38,8 @@ def main():
 
     gcp_bucket = "mnist_model_store"
 
-    timestamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
     model_path = os.path.join("gs://", gcp_bucket, "mnist_model")
     # save_path = os.path.join("gs://", gcp_bucket, "mnist_model1", "save_at_{}.h5".format(timestamp))
-    save_path = "save_at_{}.h5".format(timestamp)
     print(save_path)
 
     model = get_model()
@@ -53,7 +51,8 @@ def main():
     loss, acc = model.evaluate(test_x, test_y)
     print("model acc: {:.4f}, model loss: {:.4f}".format(acc, loss))
 
-    # model.save(save_path)
+    timestamp = datetime.datetime.now().strftime("%y%m%d-%H%M%S")
+    save_path = "save_at_{}_acc_{}_loss_.h5".format(timestamp, acc, loss)
     model.save(save_path)
 
     with file_io.FileIO(save_path, mode='rb') as input_file:
