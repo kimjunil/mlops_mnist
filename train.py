@@ -39,8 +39,6 @@ def main():
     gcp_bucket = "mnist_model_store"
 
     model_path = os.path.join("gs://", gcp_bucket, "mnist_model")
-    # save_path = os.path.join("gs://", gcp_bucket, "mnist_model1", "save_at_{}.h5".format(timestamp))
-    print(save_path)
 
     model = get_model()
     (train_x, train_y), (test_x, test_y) = tf.keras.datasets.mnist.load_data()
