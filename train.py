@@ -121,5 +121,7 @@ def main():
     if slack_url != None:
         send_message_to_slack(slack_url, acc, loss, training_time, gs_path)
 
+    request_deploy_api(gs_path)
+    
 if __name__ == '__main__':
   main()
