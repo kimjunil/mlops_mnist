@@ -35,7 +35,7 @@ def get_model():
     model.compile(optimizer=optimizer, loss="sparse_categorical_crossentropy", metrics=["accuracy"])
     return model
 
-def send_message_to_slack(url, acc, loss, training_time): 
+def send_message_to_slack(url, acc, loss, training_time, model_path): 
     payload = {
         "blocks": [
             {
@@ -59,6 +59,9 @@ def send_message_to_slack(url, acc, loss, training_time):
                     {
                         "type": "mrkdwn",
                         "text": f"*Loss:*\n{loss}"
+                    },{
+                        "type": "mrkdwn",
+                        "text": f"*gsutil URI:*\n{model_path}"
                     }
                 ]
             }
@@ -98,11 +101,11 @@ def main():
 
     end = time.time()
     sec = (end - start) 
-    training_time = str(datetime.timedelta(seconds=sec)).split(".")
+    training_time = str(datetime.timedelta(seconds=sec)).split(".")[0]
 
     slack_url = os.getenv("WEB_HOOK_URL")
     if slack_url != None:
-        send_message_to_slack(slack_url, acc, loss, training_time)
+        send_message_to_slack(slack_url, acc, loss, training_time, gs_path)
 
 if __name__ == '__main__':
   main()
