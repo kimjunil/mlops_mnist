@@ -3,6 +3,7 @@ import tensorflow as tf
 import argparse
 import os
 import datetime
+import requests
 
 def get_args():
     parser = argparse.ArgumentParser(description='Tensorflow MNIST Example')
@@ -30,6 +31,9 @@ def get_model():
     model.compile(optimizer=optimizer, loss="sparse_categorical_crossentropy", metrics=["accuracy"])
     return model
 
+def send_message_to_slack(url, text): 
+    payload = { "text" : text } 
+    requests.post(url, json=payload)
 
 def main():
     args = get_args()
@@ -53,6 +57,9 @@ def main():
     model_path = os.path.join(model_path, save_path)
     model.save(model_path)
 
+    slack_url = os.getenv("WEB_HOOK_URL")
+    if slack_url != None:
+        send_message_to_slack(slack_url, f"학습완료! , {model_path}")
 
 if __name__ == '__main__':
   main()
