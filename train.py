@@ -3,6 +3,7 @@ import tensorflow as tf
 import argparse
 import os
 import datetime
+import requests
 from tensorflow.python.lib.io import file_io
 
 def get_args():
