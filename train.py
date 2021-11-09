@@ -75,9 +75,12 @@ def request_deploy_api(model_path):
     access_token = os.getenv("GITHUB_TOKEN")
     model_tag = os.getenv("MODEL_TAG")
 
+    print(owner, repo, model_tag)
+
     headers = {'Authorization' : 'token ' + access_token }
-    data = {"model_path": model_path, "model_tag": model_tag, }
+    data = {"model_path": model_path, "model_tag": model_tag }
     r = requests.post(f"http://api.github.com/repos/{owner}/{repo}/dispatches", headers=headers, data=data)
+    print(r)
 
 
 def main():
