@@ -5,6 +5,9 @@ import os
 import datetime
 import requests
 from tensorflow.python.lib.io import file_io
+import math
+import time
+import datetime
 
 def get_args():
     parser = argparse.ArgumentParser(description='Tensorflow MNIST Example')
@@ -32,11 +35,41 @@ def get_model():
     model.compile(optimizer=optimizer, loss="sparse_categorical_crossentropy", metrics=["accuracy"])
     return model
 
-def send_message_to_slack(url, text): 
-    payload = { "text" : text } 
+def send_message_to_slack(url, acc, loss, training_time): 
+    payload = {
+        "blocks": [
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "학습이 완료되었습니다."
+                }
+            },
+            {
+                "type": "section",
+                "fields": [
+                    {
+                        "type": "mrkdwn",
+                        "text": f"*Accuracy:*\n{acc}"
+                    },
+                    {
+                        "type": "mrkdwn",
+                        "text": f"*Training Time:*\n{training_time}"
+                    },
+                    {
+                        "type": "mrkdwn",
+                        "text": f"*Loss:*\n{loss}"
+                    }
+                ]
+            }
+        ]
+    }
     requests.post(url, json=payload)
 
 def main():
+
+    start = time.time()
+
     args = get_args()
     epochs = args.epochs
 
@@ -63,9 +96,13 @@ def main():
         with file_io.FileIO(gs_path, mode='wb+') as output_file:
             output_file.write(input_file.read())
 
+    end = time.time()
+    sec = (end - start) 
+    training_time = str(datetime.timedelta(seconds=sec)).split(".")
+
     slack_url = os.getenv("WEB_HOOK_URL")
     if slack_url != None:
-        send_message_to_slack(slack_url, f"학습완료! , {gs_path}")
+        send_message_to_slack(slack_url, acc, loss, training_time)
 
 if __name__ == '__main__':
   main()
