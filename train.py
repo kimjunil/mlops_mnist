@@ -77,7 +77,7 @@ def request_deploy_api(model_path):
     model_tag = os.getenv("MODEL_TAG")
 
     headers = {'Authorization' : 'token ' + access_token }
-    data = {"ref": "main", "input":{"model_path": model_path, "model_tag": model_tag }}
+    data = {"ref": "main", "inputs":{"model_path": model_path, "model_tag": model_tag }}
     r = requests.post(f"http://api.github.com/repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches", headers=headers, data=data)
     print(r)
 
