@@ -8,7 +8,6 @@ from tensorflow.python.lib.io import file_io
 import time
 import datetime
 import requests
-from github import Github
 
 def get_args():
     parser = argparse.ArgumentParser(description='Tensorflow MNIST Example')
@@ -70,13 +69,15 @@ def send_message_to_slack(url, acc, loss, training_time, model_path):
     }
     requests.post(url, json=payload)
 
-def request_deploy_api():
+def request_deploy_api(model_path):
     owner = os.getenv("GITHUB_OWNER")
     repo = os.getenv("GITHUB_REPO")
     access_token = os.getenv("GITHUB_TOKEN")
+    model_tag = os.getenv("MODEL_TAG")
 
-    g = Github(access_token)
-    g.get_user(owner).get_repo(repo).create_repository_dispatch("deploy")
+    headers = {'Authorization' : 'token ' + access_token }
+    data = {"model_path": model_path, "model_tag": model_tag, }
+    r = requests.post(f"http://api.github.com/repos/{owner}/{repo}/dispatches", headers=headers, data=data)
 
 
 def main():
