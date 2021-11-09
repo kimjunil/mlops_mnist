@@ -3,7 +3,7 @@ import tensorflow as tf
 import argparse
 import os
 import datetime
-import requests
+from tensorflow.python.lib.io import file_io
 
 def get_args():
     parser = argparse.ArgumentParser(description='Tensorflow MNIST Example')
@@ -54,12 +54,17 @@ def main():
 
     timestamp = datetime.datetime.now().strftime("%y%m%d-%H%M%S")
     save_path = "save_at_{}_acc_{}_loss_.h5".format(timestamp, acc, loss)
-    model_path = os.path.join(model_path, save_path)
-    model.save(model_path)
+    model.save(save_path)
+
+    gs_path = os.path.join(model_path, save_path)
+
+    with file_io.FileIO(save_path, mode='rb') as input_file:
+        with file_io.FileIO(gs_path, mode='wb+') as output_file:
+            output_file.write(input_file.read())
 
     slack_url = os.getenv("WEB_HOOK_URL")
     if slack_url != None:
-        send_message_to_slack(slack_url, f"학습완료! , {model_path}")
+        send_message_to_slack(slack_url, f"학습완료! , {gs_path}")
 
 if __name__ == '__main__':
   main()
