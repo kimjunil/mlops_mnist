@@ -8,6 +8,7 @@ from tensorflow.python.lib.io import file_io
 import time
 import datetime
 import requests
+import json
 
 def get_args():
     parser = argparse.ArgumentParser(description='Tensorflow MNIST Example')
@@ -78,7 +79,7 @@ def request_deploy_api(model_path):
 
     headers = {'Authorization' : 'token ' + access_token }
     data = {"ref": "main", "inputs":{"model_path": model_path, "model_tag": model_tag }}
-    response = requests.post(f"https://api.github.com/repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches", headers=headers, data=data)
+    response = requests.post(f"https://api.github.com/repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches", headers=headers, data=json.dumps(data))
     print(response.text)
 
 def main():
