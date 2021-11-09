@@ -30,7 +30,7 @@ jobs:
         directory: .
         username: ${{ github.repository_owner }}
         password: ${{ secrets.PACKAGE_REGISTRY_ACCESS_TOKEN}}
-        buildArgs: MODEL_TAG_ARG=${{ env.RELEASE_VERSION }}, GITHUB_OWNER_ARG=${{ github.repository_owner }}, GITHUB_REPO_ARG=kimjunil/mlops_mnist_config, GITHUB_TOKEN_ARG=${{ secrets.PACKAGE_REGISTRY_ACCESS_TOKEN}}
+        buildArgs: MODEL_TAG_ARG=${{ env.RELEASE_VERSION }}, GITHUB_OWNER_ARG=${{ github.repository_owner }}, GITHUB_REPO_ARG=kimjunil/mlops_mnist_config, GITHUB_WORKFLOW_ARG=bento, GITHUB_TOKEN_ARG=${{ secrets.PACKAGE_REGISTRY_ACCESS_TOKEN}}
         addLatest: true
     - name: Setup Kustomize
       uses: imranismail/setup-kustomize@v1
