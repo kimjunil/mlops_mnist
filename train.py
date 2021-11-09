@@ -78,14 +78,7 @@ def request_deploy_api(model_path):
 
     headers = {'Authorization' : 'token ' + access_token }
     data = {"ref": "main", "inputs":{"model_path": model_path, "model_tag": model_tag }}
-    r = requests.post(f"http://api.github.com/repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches", headers=headers, data=data)
-    print("request header:", r.request.headers)
-    print("request body:", r.request.body)
-    print("request url:", r.request.url)
-
-    print("response:", r)
-    print("response:", r.raw)
-    print("response:", r.reason)
+    r = requests.post(f"https://api.github.com/repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches", headers=headers, data=data)
 
 
 def main():
