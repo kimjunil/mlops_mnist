@@ -51,11 +51,9 @@ def main():
 
     timestamp = datetime.datetime.now().strftime("%y%m%d-%H%M%S")
     save_path = "save_at_{}_acc_{}_loss_.h5".format(timestamp, acc, loss)
-    model.save(save_path)
+    model_path = os.path.join(model_path, save_path)
+    model.save(model_path)
 
-    with file_io.FileIO(save_path, mode='rb') as input_file:
-        with file_io.FileIO(os.path.join(model_path, save_path), mode='wb+') as output_file:
-            output_file.write(input_file.read())
 
 if __name__ == '__main__':
   main()
