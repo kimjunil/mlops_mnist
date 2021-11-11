@@ -21,6 +21,7 @@ ENV MODEL_TAG=${MODEL_TAG_ARG}
 
 # Copies the trainer code
 RUN mkdir /root/trainer
+COPY utils.py /root/trainer/utils.py
 COPY train.py /root/trainer/mnist.py
 
 # Sets up the entry point to invoke the trainer.
