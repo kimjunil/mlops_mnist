@@ -8,7 +8,8 @@ from tensorflow.python.lib.io import file_io
 import time
 import datetime
 import requests
-import json
+from utils import send_message_to_slack
+from utils import request_deploy_api
 
 def get_args():
     parser = argparse.ArgumentParser(description='Tensorflow MNIST Example')
@@ -36,62 +37,15 @@ def get_model():
     model.compile(optimizer=optimizer, loss="sparse_categorical_crossentropy", metrics=["accuracy"])
     return model
 
-def send_message_to_slack(url, acc, loss, training_time, model_path): 
-    payload = {
-        "blocks": [
-            {
-                "type": "section",
-                "text": {
-                    "type": "mrkdwn",
-                    "text": "학습이 완료되었습니다."
-                }
-            },
-            {
-                "type": "section",
-                "fields": [
-                    {
-                        "type": "mrkdwn",
-                        "text": f"*Accuracy:*\n{acc}"
-                    },
-                    {
-                        "type": "mrkdwn",
-                        "text": f"*Training Time:*\n{training_time}"
-                    },
-                    {
-                        "type": "mrkdwn",
-                        "text": f"*Loss:*\n{loss}"
-                    },{
-                        "type": "mrkdwn",
-                        "text": f"*gsutil URI:*\n{model_path}"
-                    }
-                ]
-            }
-        ]
-    }
-    requests.post(url, json=payload)
-
-def request_deploy_api(model_path):
-    owner = os.getenv("GITHUB_OWNER")
-    repo = os.getenv("GITHUB_REPO")
-    workflow_id = os.getenv("GITHUB_WORKFLOW")
-    access_token = os.getenv("GITHUB_TOKEN")
-    model_tag = os.getenv("MODEL_TAG")
-
-    headers = {'Authorization' : 'token ' + access_token }
-    data = {"ref": "main", "inputs":{"model_path": model_path, "model_tag": model_tag }}
-    response = requests.post(f"https://api.github.com/repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches", headers=headers, data=json.dumps(data))
-    print(response.text)
-
 def main():
 
     start = time.time()
 
     args = get_args()
     epochs = args.epochs
+    gcp_bucket = os.getenv("GCS_BUCKET_ARG")
 
-    gcp_bucket = "mnist_model_store"
-
-    model_path = os.path.join("gs://", gcp_bucket, "mnist_model")
+    bucket_path = os.path.join("gs://", gcp_bucket, "mnist_model")
 
     model = get_model()
     (train_x, train_y), (test_x, test_y) = tf.keras.datasets.mnist.load_data()
@@ -106,7 +60,7 @@ def main():
     save_path = "save_at_{}_acc_{}_loss_.h5".format(timestamp, acc, loss)
     model.save(save_path)
 
-    gs_path = os.path.join(model_path, save_path)
+    gs_path = os.path.join(bucket_path, save_path)
 
     with file_io.FileIO(save_path, mode='rb') as input_file:
         with file_io.FileIO(gs_path, mode='wb+') as output_file:
