@@ -45,7 +45,7 @@ def main():
     epochs = args.epochs
     gcp_bucket = os.getenv("GCS_BUCKET")
 
-    bucket_path = os.path.join("gs://", gcp_bucket, "mnist_model")
+    bucket_path = os.path.join(gcp_bucket, "mnist_model")
 
     model = get_model()
     (train_x, train_y), (test_x, test_y) = tf.keras.datasets.mnist.load_data()
