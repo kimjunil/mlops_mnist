@@ -43,7 +43,7 @@ def main():
 
     args = get_args()
     epochs = args.epochs
-    gcp_bucket = os.getenv("GCS_BUCKET_ARG")
+    gcp_bucket = os.getenv("GCS_BUCKET")
 
     bucket_path = os.path.join("gs://", gcp_bucket, "mnist_model")
 
